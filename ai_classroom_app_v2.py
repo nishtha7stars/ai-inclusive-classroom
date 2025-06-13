@@ -36,7 +36,11 @@ if "role" not in st.session_state:
     st.session_state.role = None
 if "messages" not in st.session_state:
     st.session_state.messages = []
+if "trigger_rerun" in st.session_state:
+    del st.session_state.trigger_rerun
+    st.experimental_rerun()
 
+# Helper functions
 def login_user(username, password):
     cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
     return cursor.fetchone()
@@ -51,7 +55,7 @@ def logout():
     st.session_state.role = None
     st.session_state.messages = []
     st.session_state.page = "Login"
-    st.rerun()
+    st.session_state.trigger_rerun = True
 
 # Sidebar navigation
 with st.sidebar:
@@ -75,7 +79,7 @@ if st.session_state.page == "Login" and not st.session_state.logged_in:
             st.session_state.role = result[2]
             st.session_state.page = "Home"
             st.success("✅ Logged in successfully")
-            st.rerun()
+            st.experimental_rerun()
         else:
             st.error("❌ Invalid username or password.")
 
@@ -88,12 +92,14 @@ if st.session_state.page == "Register" and not st.session_state.logged_in:
     if st.button("Register"):
         add_user(new_user, new_pass, role)
         st.success("✅ Registration successful. Redirecting to login...")
-        st.session_state.page = "Login"
-        st.experimental_rerun()
+        st.session_state.trigger_rerun = True
 
 # Home Page
 if st.session_state.logged_in and st.session_state.page == "Home":
     st.title("🧠 LearnEase AI – Inclusive Learning Assistant")
+
+    if st.button("🔓 Logout"):
+        logout()
 
     if st.session_state.role == "Student":
         style = st.selectbox("Learning Style", ["Text", "Visual", "Audio"])
@@ -127,6 +133,7 @@ if st.session_state.logged_in and st.session_state.page == "Home":
         st.subheader("👩‍🏫 Student Overview")
         df = pd.read_sql_query("SELECT username, style, mood FROM users WHERE role='Student'", conn)
         st.dataframe(df)
+
 
 
 
