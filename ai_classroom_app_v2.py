@@ -36,8 +36,11 @@ if "role" not in st.session_state:
     st.session_state.role = None
 if "messages" not in st.session_state:
     st.session_state.messages = []
-if "trigger_rerun" in st.session_state:
-    del st.session_state.trigger_rerun
+
+# Safe rerun after registration
+if st.session_state.get("redirect_to_login", False):
+    st.session_state.page = "Login"
+    del st.session_state["redirect_to_login"]
     st.experimental_rerun()
 
 # Helper functions
@@ -55,7 +58,7 @@ def logout():
     st.session_state.role = None
     st.session_state.messages = []
     st.session_state.page = "Login"
-    st.session_state.trigger_rerun = True
+    st.experimental_rerun()
 
 # Sidebar navigation
 with st.sidebar:
@@ -92,7 +95,7 @@ if st.session_state.page == "Register" and not st.session_state.logged_in:
     if st.button("Register"):
         add_user(new_user, new_pass, role)
         st.success("✅ Registration successful. Redirecting to login...")
-        st.session_state.trigger_rerun = True
+        st.session_state.redirect_to_login = True
 
 # Home Page
 if st.session_state.logged_in and st.session_state.page == "Home":
@@ -133,8 +136,3 @@ if st.session_state.logged_in and st.session_state.page == "Home":
         st.subheader("👩‍🏫 Student Overview")
         df = pd.read_sql_query("SELECT username, style, mood FROM users WHERE role='Student'", conn)
         st.dataframe(df)
-
-
-
-
-
