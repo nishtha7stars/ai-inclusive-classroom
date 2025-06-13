@@ -51,7 +51,7 @@ def logout():
     st.session_state.role = None
     st.session_state.messages = []
     st.session_state.page = "Login"
-    st.experimental_rerun()
+    st.rerun()
 
 # Sidebar navigation
 with st.sidebar:
@@ -75,7 +75,7 @@ if st.session_state.page == "Login" and not st.session_state.logged_in:
             st.session_state.role = result[2]
             st.session_state.page = "Home"
             st.success("✅ Logged in successfully")
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("❌ Invalid username or password.")
 
@@ -89,7 +89,7 @@ if st.session_state.page == "Register" and not st.session_state.logged_in:
         add_user(new_user, new_pass, role)
         st.success("✅ Registration successful. You can now log in.")
         st.session_state.page = "Login"
-        st.experimental_rerun()
+        st.rerun()
 
 # Home Page
 if st.session_state.logged_in and st.session_state.page == "Home":
