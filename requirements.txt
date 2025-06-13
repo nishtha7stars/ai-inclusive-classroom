@@ -1,0 +1,7 @@
+streamlit
+openai
+gTTS
+playsound
+pandas
+opencv-python
+fer
