@@ -87,9 +87,9 @@ if st.session_state.page == "Register" and not st.session_state.logged_in:
     role = st.selectbox("Role", ["Student", "Teacher"])
     if st.button("Register"):
         add_user(new_user, new_pass, role)
-        st.success("✅ Registration successful. You can now log in.")
+        st.success("✅ Registration successful. Redirecting to login...")
         st.session_state.page = "Login"
-        st.rerun()
+        st.experimental_rerun()
 
 # Home Page
 if st.session_state.logged_in and st.session_state.page == "Home":
@@ -127,5 +127,6 @@ if st.session_state.logged_in and st.session_state.page == "Home":
         st.subheader("👩‍🏫 Student Overview")
         df = pd.read_sql_query("SELECT username, style, mood FROM users WHERE role='Student'", conn)
         st.dataframe(df)
+
 
 
