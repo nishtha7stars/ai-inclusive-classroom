@@ -136,3 +136,4 @@ if st.session_state.logged_in and st.session_state.page == "Home":
         st.subheader("👩‍🏫 Student Overview")
         df = pd.read_sql_query("SELECT username, style, mood FROM users WHERE role='Student'", conn)
         st.dataframe(df)
+
